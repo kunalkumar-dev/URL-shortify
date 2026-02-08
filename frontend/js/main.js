@@ -76,6 +76,11 @@ function setupAppListeners() {
 
 // Load and display URLs
 let allUrls = [];
+const SHORT_URL_BASE = window.SHORT_URL_BASE_URL || API_BASE_URL;
+
+function getShortUrl(shortId) {
+  return `${SHORT_URL_BASE}/urls/${shortId}`;
+}
 
 async function loadUrls() {
   try {
@@ -133,8 +138,8 @@ function displayUrls(urls) {
           <label>Original URL:</label><br>
           <span>${escapeHtml(url.originalUrl)}</span>
         </div>
-        <div class="short" onclick="copyToClipboard('http://localhost:5000/api/urls/${url.shortId}'); showAlert('Copied!', 'info')">
-         http://localhost:5000/api/urls/${url.shortId}
+        <div class="short" onclick="copyToClipboard('${getShortUrl(url.shortId)}'); showAlert('Copied!', 'info')">
+         ${getShortUrl(url.shortId)}
         </div>
         <div class="clicks">
           Clicks: <span class="clicks-value">${url.clicks}</span>
@@ -144,7 +149,7 @@ function displayUrls(urls) {
         </div>
       </div>
       <div class="url-actions">
-        <button class="copy-btn" onclick="copyToClipboard('http://localhost:5000/api/urls/${url.shortId}'); showAlert('Link copied!', 'success')">
+        <button class="copy-btn" onclick="copyToClipboard('${getShortUrl(url.shortId)}'); showAlert('Link copied!', 'success')">
           📋 Copy
         </button>
         <button class="delete-btn" onclick="deleteUrl('${url.shortId}')">
@@ -290,7 +295,7 @@ function exportToJSON() {
   const exportData = allUrls.map(url => ({
     originalUrl: url.originalUrl,
     shortCode: url.shortId,
-    shortUrl: `http://localhost:5000/api/urls/${url.shortId}`,
+    shortUrl: getShortUrl(url.shortId),
     clicks: url.clicks,
     createdAt: new Date(url.createdAt).toISOString(),
   }));
