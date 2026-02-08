@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feature Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+        .test { padding: 10px; margin: 10px 0; border-left: 4px solid #ddd; }
+        .pass { background: #d4edda; border-left-color: #28a745; }
+        .fail { background: #f8d7da; border-left-color: #dc3545; }
+        .info { background: #d1ecf1; border-left-color: #0c5460; }
+        h1 { color: #333; }
+    </style>
+</head>
+<body>
+    <h1>URL Shortener - Feature Verification</h1>
+    <div id="tests"></div>
+    
+    <script>
+        const tests = [];
+        
+        function addTest(name, status, message) {
+            tests.push({ name, status, message });
+            const testsDiv = document.getElementById('tests');
+            const testEl = document.createElement('div');
+            testEl.className = `test ${status}`;
+            testEl.innerHTML = `<strong>${status.toUpperCase()}</strong> - ${name}<br><em>${message}</em>`;
+            testsDiv.appendChild(testEl);
+        }
+        
+        // Test all frontend features
+        async function runTests() {
+            // Test 1: Dark mode exists
+            const darkBtn = document.getElementById('dark-mode-toggle');
+            addTest('Dark Mode Button', darkBtn ? 'pass' : 'fail', 
+                darkBtn ? 'Button found' : 'Button not found');
+            
+            // Test 2: QR Modal exists
+            const qrModal = document.getElementById('qr-modal');
+            addTest('QR Modal Structure', qrModal ? 'pass' : 'fail',
+                qrModal ? 'Modal element found' : 'Modal not found');
+            
+            // Test 3: Export button exists
+            const exportBtn = document.getElementById('export-btn');
+            addTest('Export Button', exportBtn ? 'pass' : 'fail',
+                exportBtn ? 'Button found' : 'Button not found');
+                
+            // Test 4: Clear All button exists
+            const clearAllBtn = document.getElementById('clear-all-btn');
+            addTest('Clear All Button', clearAllBtn ? 'pass' : 'fail',
+                clearAllBtn ? 'Button found' : 'Button not found');
+                
+            // Test 5: Sort select exists
+            const sortSelect = document.getElementById('sort-select');
+            addTest('Sort Dropdown', sortSelect ? 'pass' : 'fail',
+                sortSelect ? `Found with ${sortSelect.options.length} options` : 'Not found');
+            
+            // Test 6: Stats container exists
+            const statsContainer = document.getElementById('stats-container');
+            addTest('Statistics Display', statsContainer ? 'pass' : 'fail',
+                statsContainer ? 'Stats container found' : 'Not found');
+            
+            // Test 7: Most clicked element exists
+            const mostClicked = document.getElementById('most-clicked');
+            addTest('Most Clicked Metric', mostClicked ? 'pass' : 'fail',
+                mostClicked ? 'Most clicked element found' : 'Not found');
+                
+            // Test 8: API connectivity
+            try {
+                const response = await fetch('http://localhost:5000/api/urls/user/all');
+                const data = await response.json();
+                addTest('API Connectivity', 'pass', 
+                    `Connected - ${data.count} URLs found`);
+            } catch (err) {
+                addTest('API Connectivity', 'fail', err.message);
+            }
+            
+            // Test 9: QR Code library loaded
+            const qrLibLoaded = typeof QRCode !== 'undefined';
+            addTest('QR Code Library', qrLibLoaded ? 'pass' : 'fail',
+                qrLibLoaded ? 'QRCode library loaded' : 'Library not found');
+                
+            // Test 10: Dark mode persistence
+            const darkModePref = localStorage.getItem('darkMode');
+            addTest('Local Storage', 'info',
+                `Dark mode preference: ${darkModePref || 'not set'}`);
+                
+            // Test 11: Functions exist
+            const functions = ['openQRModal', 'toggleDarkMode', 'sortUrls', 'exportToJSON', 'clearAllUrls'];
+            functions.forEach(func => {
+                const exists = typeof window[func] === 'function';
+                addTest(`Function: ${func}`, exists ? 'pass' : 'fail',
+                    exists ? 'Function defined' : 'Function missing');
+            });
+            
+            // Summary
+            const passCount = tests.filter(t => t.status === 'pass').length;
+            const failCount = tests.filter(t => t.status === 'fail').length;
+            const summary = document.createElement('div');
+            summary.className = 'test info';
+            summary.innerHTML = `<strong>SUMMARY</strong><br>Passed: ${passCount} | Failed: ${failCount} | Total: ${tests.length}`;
+            document.getElementById('tests').appendChild(summary);
+        }
+        
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortify - Shorten Your URLs</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header with Dark Mode Toggle -->
+    <header>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+          <h1>🔗 URL Shortify</h1>
+          <p>Make your URLs shorter, shareable, and trackable</p>
+        </div>
+        <button id="dark-mode-toggle" class="dark-mode-btn" title="Toggle dark mode">🌙</button>
+      </div>
+    </header>
+
+    <!-- Alert Container -->
+    <div id="alert-container"></div>
+
+    <!-- Main Application Section -->
+    <div id="app-section" class="app-section">
+      
+      <!-- Shortener Form Card -->
+      <div class="card">
+        <div class="urlshortener-form">
+          <h2>Shorten Your URL</h2>
+          <form id="shorten-form">
+            <input 
+              type="url" 
+              id="url-input" 
+              placeholder="Enter your long URL (e.g., https://example.com/very/long/url)" 
+              required
+              autocomplete="off">
+            <button type="submit" id="shorten-btn">Shorten</button>
+          </form>
+          <small style="margin-top: 10px; color: #666;">
+            💡 Tip: Press <strong>Shift + Enter</strong> to quickly shorten URLs
+          </small>
+        </div>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="card" id="stats-container" style="display: none;">
+        <h3 style="margin-bottom: 20px; color: #2c3e50;">📊 Your Statistics</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px;">
+          <div style="text-align: center;">
+            <div style="font-size: 2em; font-weight: 700; color: #667eea; margin-bottom: 5px;" id="total-urls">0</div>
+            <div style="color: #666; font-size: 0.9em;">Total URLs</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2em; font-weight: 700; color: #52c734; margin-bottom: 5px;" id="total-clicks">0</div>
+            <div style="color: #666; font-size: 0.9em;">Total Clicks</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2em; font-weight: 700; color: #3498db; margin-bottom: 5px;" id="avg-clicks">0</div>
+            <div style="color: #666; font-size: 0.9em;">Avg. Clicks</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2em; font-weight: 700; color: #f39c12; margin-bottom: 5px;" id="most-clicked">—</div>
+            <div style="color: #666; font-size: 0.9em;">Most Clicked</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- URLs List Card -->
+      <div class="card">
+        <div class="urls-list">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h2>
+              Your Shortened URLs
+              <span class="url-count" id="url-count">0</span>
+            </h2>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button id="export-btn" class="action-btn" title="Export URLs as JSON" style="display: none;">📥 Export</button>
+              <button id="clear-all-btn" class="action-btn danger" title="Clear all URLs" style="display: none;">🗑 Clear All</button>
+            </div>
+          </div>
+
+          <!-- Filter & Sort -->
+          <div class="filter-section" id="filter-section" style="display: none; flex-wrap: wrap; gap: 15px;">
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="🔍 Search URLs..."
+            >
+            <select id="sort-select" style="padding: 12px 16px; border: 2px solid #e1e8ed; border-radius: 8px; cursor: pointer; flex: 1; min-width: 150px;">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="mostClicked">Most Clicked</option>
+              <option value="leastClicked">Least Clicked</option>
+            </select>
+          </div>
+
+          <!-- URLs Container -->
+          <div id="urls-container">
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <p>No shortened URLs yet.<br>Create one to get started!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
