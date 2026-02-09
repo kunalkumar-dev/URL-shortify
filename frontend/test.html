@@ -66,7 +66,7 @@
                 
             // Test 8: API connectivity
             try {
-                const response = await fetch('http://localhost:5000/api/urls/user/all');
+                const response = await fetch('/api/urls/user/all');
                 const data = await response.json();
                 addTest('API Connectivity', 'pass', 
                     `Connected - ${data.count} URLs found`);
