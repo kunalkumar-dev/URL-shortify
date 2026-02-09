@@ -7,21 +7,20 @@ exports.register = async (req, res) => {
     const { username, email, password } = req.body;
 
     // Check if user exists
-    let user = await User.findOne({ $or: [{ email }, { username }] });
+    const user = await User.findOne({ where: { email } });
     if (user) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
     // Create new user
-    user = new User({ username, email, password });
-    await user.save();
+    const newUser = await User.create({ username, email, password });
 
     // Create JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
 
-    res.status(201).json({ token, user: { id: user._id, username, email } });
+    res.status(201).json({ token, user: { id: newUser.id, username, email } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -33,7 +32,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
@@ -45,12 +44,13 @@ exports.login = async (req, res) => {
     }
 
     // Create JWT token
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: '7d',
     });
 
-    res.json({ token, user: { id: user._id, username: user.username, email: user.email } });
+    res.json({ token, user: { id: user.id, username: user.username, email: user.email } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+

@@ -30,7 +30,7 @@ exports.shortenUrl = async (req, res) => {
     }
 
     // Check if URL already exists (to prevent duplicates)
-    const existingUrl = await UrlModel.findOne({ originalUrl });
+    const existingUrl = await UrlModel.findOne({ where: { originalUrl } });
     if (existingUrl) {
       return res.status(200).json({
         shortId: existingUrl.shortId,
@@ -41,8 +41,7 @@ exports.shortenUrl = async (req, res) => {
     }
 
     // Create URL document (without userId)
-    const urlDoc = new UrlModel({ originalUrl });
-    await urlDoc.save();
+    const urlDoc = await UrlModel.create({ originalUrl });
 
     res.status(201).json({
       shortId: urlDoc.shortId,
@@ -60,7 +59,7 @@ exports.redirectUrl = async (req, res) => {
   try {
     const { shortId } = req.params;
 
-    const urlDoc = await UrlModel.findOne({ shortId });
+    const urlDoc = await UrlModel.findOne({ where: { shortId } });
     if (!urlDoc) {
       return res.status(404).json({ error: 'Short URL not found' });
     }
@@ -71,8 +70,7 @@ exports.redirectUrl = async (req, res) => {
     }
 
     // Increment click count
-    urlDoc.clicks += 1;
-    await urlDoc.save();
+    await urlDoc.increment('clicks');
 
     res.redirect(urlDoc.originalUrl);
   } catch (error) {
@@ -85,10 +83,9 @@ exports.redirectUrl = async (req, res) => {
 exports.getUserUrls = async (req, res) => {
   try {
     // Get all URLs (not user-specific), sorted by creation date, most recent first
-    const urls = await UrlModel.find()
-      .sort({ createdAt: -1 })
-      .lean()
-      .exec();
+    const urls = await UrlModel.findAll({
+      order: [['createdAt', 'DESC']],
+    });
     
     res.json({
       success: true,
@@ -110,10 +107,12 @@ exports.deleteUrl = async (req, res) => {
       return res.status(400).json({ error: 'Short ID is required' });
     }
 
-    const urlDoc = await UrlModel.findOneAndDelete({ shortId });
+    const urlDoc = await UrlModel.findOne({ where: { shortId } });
     if (!urlDoc) {
       return res.status(404).json({ error: 'Short URL not found' });
     }
+
+    await urlDoc.destroy();
 
     res.json({ 
       success: true,

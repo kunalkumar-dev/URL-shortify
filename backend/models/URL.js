@@ -1,34 +1,46 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
 const shortId = require('shortid');
+const { sequelize } = require('../config/database');
 
-const urlSchema = new mongoose.Schema({
+const URL = sequelize.define('URL', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   originalUrl: {
-    type: String,
-    required: true,
-    trim: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   shortId: {
-    type: String,
-    default: shortId.generate,
+    type: DataTypes.STRING,
     unique: true,
-    index: true,
+    allowNull: false,
+    defaultValue: () => shortId.generate(),
   },
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Users',
+      key: 'id',
+    },
+    allowNull: true,
   },
   clicks: {
-    type: Number,
-    default: 0,
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
   expiresAt: {
-    type: Date,
-    default: null,
+    type: DataTypes.DATE,
+    allowNull: true,
   },
+}, {
+  timestamps: false,
+  tableName: 'URLs',
 });
 
-module.exports = mongoose.model('URL', urlSchema);
+module.exports = URL;
