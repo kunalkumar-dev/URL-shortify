@@ -35,7 +35,7 @@ exports.shortenUrl = async (req, res) => {
       return res.status(200).json({
         shortId: existingUrl.shortId,
         originalUrl: existingUrl.originalUrl,
-        shortUrl: `${process.env.API_BASE_URL || 'http://localhost:5000/api'}/urls/${existingUrl.shortId}`,
+        shortUrl: `${process.env.API_BASE_URL || '/api'}/urls/${existingUrl.shortId}`,
         message: 'This URL was already shortened!',
       });
     }
@@ -47,7 +47,7 @@ exports.shortenUrl = async (req, res) => {
     res.status(201).json({
       shortId: urlDoc.shortId,
       originalUrl: urlDoc.originalUrl,
-      shortUrl: `${process.env.API_BASE_URL || 'http://localhost:5000/api'}/urls/${urlDoc.shortId}`,
+      shortUrl: `${process.env.API_BASE_URL || '/api'}/urls/${urlDoc.shortId}`,
     });
   } catch (error) {
     console.error('Error in shortenUrl:', error);

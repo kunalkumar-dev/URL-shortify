@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: url-shortify-backend
+    env: node
+    branch: main
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+  - type: static
+    name: url-shortify-frontend
+    env: static
+    branch: main
+    staticPublishPath: frontend
+    plan: free
