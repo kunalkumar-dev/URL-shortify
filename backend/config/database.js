@@ -1,8 +1,20 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgresql://user:password@localhost:5432/url-shortify', {
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL not set');
+}
+
+const sequelize = new Sequelize(databaseUrl, {
   dialect: 'postgres',
   logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
   pool: {
     max: 5,
     min: 0,
@@ -15,9 +27,9 @@ const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log('PostgreSQL connected successfully');
-    await sequelize.sync({ alter: false });
+    await sequelize.sync();
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error('DB Connection Error:', error.message);
     process.exit(1);
   }
 };
