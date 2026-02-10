@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const urlController = require('../controllers/urlController');
 
-// Get all URLs - MUST come before /:shortId route
+// Get all URLs - MUST come before /:shortId
 router.get('/user/all', urlController.getUserUrls);
 
 // Create short URL (no auth required)

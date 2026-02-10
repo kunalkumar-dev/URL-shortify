@@ -1,6 +1,6 @@
 const UrlModel = require('../models/URL');
 
-// Validate URL format using the global URL constructor
+
 function isValidUrl(string) {
   try {
     // Use global URL constructor to avoid name collision with the model

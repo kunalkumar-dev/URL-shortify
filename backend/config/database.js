@@ -1,9 +1,18 @@
 const { Sequelize } = require('sequelize');
 
-const databaseUrl = process.env.DATABASE_URL;
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRESQL_URL;
 
 if (!databaseUrl) {
-  throw new Error('DATABASE_URL not set');
+  throw new Error(
+    'PostgreSQL connection string not set. Define DATABASE_URL (or POSTGRES_URL/POSTGRESQL_URL).'
+  );
 }
 
 const sequelize = new Sequelize(databaseUrl, {
